@@ -1,0 +1,15 @@
+{
+  "name": "switchyard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hybrid vector+graph RAG stack for Railway. PLACEHOLDER NAME — rename once the Railyard theme/lore is finalized, see DESIGN.md.",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.mjs",
+    "self-check": "node scripts/self-check.mjs"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.13.0"
+  }
+}

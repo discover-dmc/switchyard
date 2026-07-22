@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Switchyard</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 16px; color: #1a1a1a; }
+  input { width: 100%; padding: 8px; font-size: 16px; box-sizing: border-box; }
+  button { margin-top: 8px; padding: 8px 16px; font-size: 16px; cursor: pointer; }
+  .result { border: 1px solid #ddd; border-radius: 6px; padding: 12px; margin-top: 12px; }
+  .result p { margin: 0; white-space: pre-wrap; font-size: 14px; }
+  .score { color: #999; font-size: 12px; }
+  section h2 { font-size: 16px; margin-top: 24px; }
+  .empty { color: #999; }
+</style>
+</head>
+<body>
+  <h1>Switchyard</h1>
+  <p>Vector search + graph expansion over ingested content.</p>
+  <input id="q" placeholder="Ask something..." />
+  <button id="go">Search</button>
+
+  <section>
+    <h2>Vector matches</h2>
+    <div id="vector"></div>
+  </section>
+  <section>
+    <h2>Graph-expanded (connected via shared entities, not necessarily textually similar)</h2>
+    <div id="graph"></div>
+  </section>
+
+  <script>
+    async function search() {
+      const query = document.getElementById('q').value.trim();
+      if (!query) return;
+      const res = await fetch('/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 5, graphDepth: 1 }),
+      });
+      const data = await res.json();
+      renderResults('vector', data.vectorMatches, true);
+      renderResults('graph', data.graphExpanded, false);
+    }
+
+    function renderResults(elId, items, showScore) {
+      const el = document.getElementById(elId);
+      el.innerHTML = '';
+      if (!items || items.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = 'No results.';
+        el.appendChild(empty);
+        return;
+      }
+      for (const item of items) {
+        const div = document.createElement('div');
+        div.className = 'result';
+        if (showScore && item.similarity != null) {
+          const score = document.createElement('div');
+          score.className = 'score';
+          score.textContent = `similarity: ${item.similarity.toFixed(3)}`;
+          div.appendChild(score);
+        }
+        const p = document.createElement('p');
+        p.textContent = item.content; // textContent, not innerHTML — content is ingested data, not trusted markup
+        div.appendChild(p);
+        el.appendChild(div);
+      }
+    }
+
+    document.getElementById('go').addEventListener('click', search);
+    document.getElementById('q').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') search();
+    });
+  </script>
+</body>
+</html>
