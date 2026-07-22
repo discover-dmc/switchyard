@@ -2,6 +2,7 @@
   "name": "switchyard",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "Hybrid vector+graph RAG stack for Railway. PLACEHOLDER NAME — rename once the Railyard theme/lore is finalized, see DESIGN.md.",
   "type": "module",
   "scripts": {

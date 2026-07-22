@@ -39,3 +39,7 @@ npm run self-check
 ```
 
 Covers the pure-logic parts (chunking, entity extraction) with `node:assert` — no framework, no DB required. Ingest/query against a live database have been verified manually against real Railway infrastructure but don't yet have a repeatable automated test — see the parent project's `TODO.md` test-strategy notes if you're picking that up.
+
+## License
+
+MIT — see [`LICENSE`](./LICENSE).
